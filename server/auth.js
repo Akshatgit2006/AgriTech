@@ -1,8 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { randomUUID, randomBytes } from "node:crypto";
-import { database, isDemo } from "./store.js";
-const localSecret = randomBytes(48).toString("hex");
+import { randomUUID } from "node:crypto";
+import { database } from "./store.js";
 export const cookieOptions = () => ({
   httpOnly: true,
   secure: !!process.env.VERCEL || process.env.NODE_ENV === "production",
@@ -11,7 +10,6 @@ export const cookieOptions = () => ({
 });
 function secret() {
   if (process.env.JWT_SECRET?.length >= 32) return process.env.JWT_SECRET;
-  if (isDemo()) return localSecret;
   throw Object.assign(
     new Error(
       "Authentication is not configured. Set JWT_SECRET to at least 32 random characters.",

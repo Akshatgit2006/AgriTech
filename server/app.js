@@ -2,7 +2,7 @@ import express from "express";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import { randomUUID, createHash } from "node:crypto";
-import { database, isDemo, isConfigured, rateLimit } from "./store.js";
+import { database, isConfigured, rateLimit } from "./store.js";
 import { schemas, parse } from "./validation.js";
 import {
   authenticate,
@@ -88,7 +88,6 @@ app.get("/api/health", (req, res) =>
   res.json({
     ok: true,
     configured: isConfigured(),
-    demo: isDemo(),
     name: "Fieldwise",
     paymentMode: "manual",
   }),
@@ -144,7 +143,7 @@ app.post("/api/auth/login", authLimit, async (req, res) => {
 });
 app.use("/api", authenticate);
 app.get("/api/auth/me", (req, res) =>
-  res.json({ user: publicUser(req.user), demo: isDemo() }),
+  res.json({ user: publicUser(req.user) }),
 );
 app.post("/api/auth/logout", async (req, res) => {
   await database((col) => col("sessions").remove({ _id: req.sessionId }));

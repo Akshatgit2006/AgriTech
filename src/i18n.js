@@ -106,7 +106,6 @@ export const hindi = {
   Region: "क्षेत्र",
   Crop: "फसल",
   Remove: "हटाएँ",
-  "Local demo": "स्थानीय डेमो",
   "Sign in to your farm workspace.": "अपने खेत कार्यक्षेत्र में साइन इन करें।",
   "Create your free farm workspace.": "अपना निःशुल्क खेत कार्यक्षेत्र बनाएँ।",
   "Already have an account?": "पहले से खाता है?",

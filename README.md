@@ -1,47 +1,55 @@
 # Fieldwise
 
-Fieldwise is a single Vercel project for farm management. The React interface and Express API deploy together; MongoDB Atlas stores production data. It has its own warm field journal visual identity and product copy.
+Fieldwise deploys as one Vercel project: a React interface and an Express API function. MongoDB Atlas is the only application database. Weather forecasts come from Open-Meteo.
 
-## What it includes
+## Features
 
-- Farmer registration and sign in, with secure HTTP-only session cookies
+- Farmer registration and sign in with HTTP-only session cookies
 - Farm, crop, soil, and activity records
-- Seven-day weather forecasts from Open-Meteo and admin advisories
+- Weather forecasts and administrator-managed advisories
 - Resource catalog, stock-aware orders, and order history
-- Private expert consultation requests and community discussions
-- Farmer and admin roles, notifications, and English/Hindi UI
+- Private expert requests, community posts, and notifications
+- Farmer and administrator roles with English and Hindi interface text
 
-## Run locally
+## Configure
 
-Requires Node.js 24 and npm.
+Use Node.js 24. Copy `.env.example` to `.env`, then fill in:
+
+| Variable | Purpose |
+| --- | --- |
+| `MONGODB_URI` | MongoDB Atlas connection string |
+| `MONGODB_DB` | Atlas database name, default `fieldwise` |
+| `JWT_SECRET` | Unique random value of at least 32 characters |
+
+Use a dedicated Atlas database and database user for this project. The Atlas cluster must accept connections from Vercel. Never commit `.env` or put secrets in client-side `VITE_` variables.
 
 ```bash
 npm ci
-```
-
-Copy `.env.example` to `.env`. Set `MONGODB_URI`, `MONGODB_DB=fieldwise`, and a random `JWT_SECRET` of at least 32 characters. For a local preview without Atlas, set `DEMO_MODE=true` and run `npm run seed` to add sample data. Demo mode is disabled automatically on Vercel and in production.
-
-```bash
 npm run dev
 ```
 
-Open `http://127.0.0.1:5173`. Run `npm test` and `npm run build` before deployment.
+Open `http://127.0.0.1:5173`. MongoDB Atlas must be configured for registration, sign in, and all saved records to work.
 
-## Deploy as one Vercel project
+## Create the first administrator
 
-Import this folder as one Vercel project. The included `vercel.json` builds the Vite app into `dist` and routes `/api/*` to the Express serverless function. There is no separate backend deployment.
+Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` in your local `.env` with real credentials, then run:
 
-Set these Vercel environment variables for Production, Preview as needed:
+```bash
+npm run create-admin
+```
 
-| Variable | Value |
-| --- | --- |
-| `MONGODB_URI` | MongoDB Atlas connection string |
-| `MONGODB_DB` | `fieldwise` (use a separate database from any other app) |
-| `JWT_SECRET` | Unique random secret, at least 32 characters |
-| `DEMO_MODE` | `false` |
+The command only creates the account if that email does not exist. Remove those two variables from `.env` afterward. Farmer accounts are created through normal registration. Add products and advisories through the administrator dashboard.
 
-Atlas must permit the Vercel function to connect. Use an Atlas database user with access only to the Fieldwise database. Atlas and the weather provider are managed services; the app itself is a single Vercel deployment.
+## Add demonstration content
 
-To create an initial admin and catalog, set `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` locally in `.env` and run `npm run seed` once against the Fieldwise Atlas database. Do not commit `.env` or use credentials from another project. Ordinary registration creates farmer accounts only.
+Run `npm run seed` when you want example catalog products and general farming advisories in the configured MongoDB database. To also add a demonstration farm, crops, soil reading, and activities, first register a farmer account and set `SEED_OWNER_EMAIL` to that account's email in your local `.env`. The seed command does not create users. It skips records already added by an earlier run and leaves edited records unchanged. Review the `MONGODB_URI` and `MONGODB_DB` values in `.env` before running it because it writes to that database.
 
-Orders record requests and tracking status; there is no online payment gateway. Soil insights are based on entered readings, and weather forecasts depend on the external provider.
+```bash
+npm run seed
+```
+
+## Deploy to Vercel
+
+Import this folder as one Vercel project. `vercel.json` builds the frontend into `dist` and routes `/api/*` to its Express function. Set `MONGODB_URI`, `MONGODB_DB`, and `JWT_SECRET` in the Vercel project environment variables. Do not add a separate backend service.
+
+Orders track requests and status; there is no online payment gateway. Soil insights use readings entered by users. Weather forecasts depend on Open-Meteo availability.

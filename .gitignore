@@ -17,16 +17,11 @@ build/
 .env.test.local
 .env.production.local
 
-# Local runtime storage
-.local/
+# Temporary files
 *.tmp
 
 # Vercel deployment cache
 .vercel/
-
-# Testing & coverage
-coverage/
-.nyc_output/
 
 # Logs
 logs/
