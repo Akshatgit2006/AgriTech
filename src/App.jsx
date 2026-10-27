@@ -634,8 +634,7 @@ function Auth() {
           </p>
           {health && !health.configured && (
             <div className="notice">
-              Connect MongoDB in your environment settings, or enable local demo
-              mode to begin.
+              Connect MongoDB Atlas by setting MONGODB_URI in the environment.
             </div>
           )}
           {error && <ErrorBox message={error} />}
@@ -702,38 +701,6 @@ function Auth() {
               {t(register ? "Sign in" : "Create account")}
             </button>
           </p>
-          {health?.demo && (
-            <div className="demo-login">
-              <Badge>{t("Local demo")}</Badge>
-              <p>Explore with sample records saved on this computer.</p>
-              <button
-                className="button secondary small"
-                onClick={() => {
-                  setRegister(false);
-                  setFields({
-                    name: "",
-                    email: "farmer@fieldwise.demo",
-                    password: "FarmerDemo123!",
-                  });
-                }}
-              >
-                Use farmer demo
-              </button>
-              <button
-                className="text-btn"
-                onClick={() => {
-                  setRegister(false);
-                  setFields({
-                    name: "",
-                    email: "admin@fieldwise.demo",
-                    password: "AdminDemo123!",
-                  });
-                }}
-              >
-                Use admin demo
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </div>
@@ -2406,7 +2373,7 @@ function Notifications({ onClose }) {
   );
 }
 function Shell() {
-  const { user, setUser, t, health, language, setLanguage, notify } = useApp();
+  const { user, setUser, t, language, setLanguage, notify } = useApp();
   const [mobile, setMobile] = useState(false);
   const [notifications, setNotifications] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -2502,9 +2469,6 @@ function Shell() {
             </span>
           </div>
           <div className="topbar-actions">
-            {health?.demo && (
-              <span className="demo-indicator">{t("Local demo")}</span>
-            )}
             <button
               className="language"
               onClick={() => setLanguage(language === "en" ? "hi" : "en")}
@@ -2530,12 +2494,6 @@ function Shell() {
           </div>
         </header>
         <main id="main-content">
-          {health?.demo && (
-            <div className="demo-banner">
-              Local demo · Sample farm and catalog records · Changes are saved
-              on this computer · Weather uses a live provider
-            </div>
-          )}
           <Routes>
             <Route path="/" element={<Dashboard />} />
             {["farms", "crops", "soil", "activities"].map((type) => (
